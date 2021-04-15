@@ -18,8 +18,8 @@ use EventSauce\BackOff\BackOffStrategy;
 class BusinessLogic
 {
     public function __construct(
-    private ExternalDependency $dependency,
-    private BackOffStrategy $backOff,
+        private ExternalDependency $dependency,
+        private BackOffStrategy $backOff,
     ) {}
 
     public function performAction(): void
@@ -106,6 +106,4 @@ function action(Client $client, BackOffStrategy $backOff): void
 }
 ```
 
-The choice is yours.
-
-## Enjoy.
+The choice is yours. Enjoy!
