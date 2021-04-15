@@ -95,6 +95,19 @@ class CappedExponentialBackOffStrategyTest extends TestCase
 
     /**
      * @test
+     */
+    public function it_does_not_throw_when_at_the_max_tries(): void
+    {
+        $backoff = new CappedExponentialBackOffStrategy(100, 100, 100);
+        $exception = new RuntimeException('oops');
+
+        self::expectNotToPerformAssertions();
+
+        $backoff->backOff(100, $exception);
+    }
+
+    /**
+     * @test
      * @dataProvider dpExpectedSleepFromExponent
      */
     public function it_uses_a_specified_exponent_value(int $tries, float $exponent, int $expectedSleep): void

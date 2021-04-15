@@ -45,6 +45,6 @@ class CappedExponentialBackOffStrategy implements BackOffStrategy
 
     private function hasExhaustedTries(int $tries): bool
     {
-        return $this->maxTries !== -1 && $tries >= $this->maxTries;
+        return $this->maxTries !== -1 && $tries > $this->maxTries;
     }
 }
