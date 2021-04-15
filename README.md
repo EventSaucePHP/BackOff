@@ -60,3 +60,52 @@ try {
     // handle the throwable
 }
 ```
+
+## Design rationale
+
+Unlike other exponential back-off libraries, this library doesn't run the
+operation you want to retry. This makes the design of the package very
+simple. It also doesn't impose any limitations on the surround code.
+
+You can retry based on a return value:
+
+```php
+use EventSauce\BackOff\BackOffStrategy;
+
+function action(Client $client, BackOffStrategy $backOff): void
+{
+    $tries = 0;
+    start:
+    $tries++;
+    $response = $client->doSomething();
+    
+    if ($response == SomeParticular::VALUE) {
+        $backOff->backOff($tries, new LogicException('Exhausted back-off'));
+        goto start;
+    }
+}
+```
+
+You can retry on a specific exception type:
+
+```php
+use EventSauce\BackOff\BackOffStrategy;
+
+function action(Client $client, BackOffStrategy $backOff): void
+{
+    $tries = 0;
+    start:
+    $tries++;
+    
+    try {
+        $client->doSomething();
+    } catch (SpecificException $exception) {
+        $backOff->backOff($tries, $exception);
+        goto start;
+    }
+}
+```
+
+The choice is yours.
+
+## Enjoy.
