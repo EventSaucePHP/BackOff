@@ -11,18 +11,18 @@ class CappedExponentialBackOffStrategy implements BackOffStrategy
     private int $initialDelayMs;
     private int $maxDelay;
     private int $maxTries;
-    private float $exponent;
+    private float $base;
 
     public function __construct(
         int $initialDelayMs,
         int $maxDelay = 2500000,
         int $maxTries = -1,
-        float $exponent = 2.0
+        float $base = 2.0
     ){
         $this->initialDelayMs = $initialDelayMs;
         $this->maxDelay = $maxDelay;
         $this->maxTries = $maxTries;
-        $this->exponent = $exponent;
+        $this->base = $base;
     }
 
     /**
@@ -34,7 +34,7 @@ class CappedExponentialBackOffStrategy implements BackOffStrategy
             throw $throwable;
         }
 
-        $delay = $this->initialDelayMs * $this->exponent ** ($tries - 1);
+        $delay = $this->initialDelayMs * $this->base ** ($tries - 1);
 
         if ($this->maxDelay !== -1) {
             $delay = min($this->maxDelay, $delay);
