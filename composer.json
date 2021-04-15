@@ -1,6 +1,7 @@
 {
     "name": "eventsauce/backoff",
     "description": "Back-off strategy interface",
+    "keywords": ["back-off", "backoff", "retry", "exponential"],
     "type": "library",
     "autoload": {
         "psr-4": {
