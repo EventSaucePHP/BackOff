@@ -4,10 +4,10 @@ namespace EventSauce\BackOff;
 
 use Throwable;
 
-class NoOpBackOffStrategy implements BackOffStrategy
+class ImmediatelyFailingBackOffStrategy implements BackOffStrategy
 {
     public function backOff(int $tries, Throwable $throwable): void
     {
-        // noop
+        throw $throwable;
     }
 }

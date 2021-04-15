@@ -2,6 +2,9 @@
 
 namespace EventSauce\BackOff;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class SleepSpy
 {
     private static array $sleeps = [];
