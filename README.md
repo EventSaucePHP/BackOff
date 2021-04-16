@@ -107,3 +107,7 @@ function action(Client $client, BackOffStrategy $backOff): void
 ```
 
 The choice is yours. Enjoy!
+
+---
+
+PS: yes, those were a lot of goto statements, deal with it 😎
