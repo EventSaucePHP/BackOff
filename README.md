@@ -38,6 +38,8 @@ class BusinessLogic
 }
 ```
 
+## Exponential back-off
+
 A well-known back-off strategy is _exponential back-off_, which is the default provided strategy.
 
 ```php
@@ -47,9 +49,33 @@ use EventSauce\BackOff\ExponentialBackOffStrategy;
 
 $backOff = new ExponentialBackOffStrategy(
     100, // initial delay in microseconds
+    15, //  max number of tries
     2500000, // (optional) max delay in microseconds, default 2.5 seconds
-    15, // (optional) max number of tries, default -1 (no max),
     2.0, // (optional) base to control the growth factor, default 2.0
+);
+
+$businessLogic = new BusinessLogic(new ExternalDependency(), $backOff);
+
+try {
+    $businessLogic->performAction();
+} catch (Throwable $throwable) {
+    // handle the throwable
+}
+```
+
+## Linear back-off
+
+The linear back-off strategy increases the back-off time linearly.
+
+```php
+<?php
+
+use EventSauce\BackOff\LinearBackOffStrategy;
+
+$backOff = new LinearBackOffStrategy(
+    100, // initial delay in microseconds
+    15, // max number of tries
+    2500000, // (optional) max delay in microseconds, default 2.5 seconds
 );
 
 $businessLogic = new BusinessLogic(new ExternalDependency(), $backOff);
