@@ -43,9 +43,9 @@ A well-known back-off strategy is _exponential back-off_, which is the default p
 ```php
 <?php
 
-use EventSauce\BackOff\CappedExponentialBackOffStrategy;
+use EventSauce\BackOff\ExponentialBackOffStrategy;
 
-$backOff = new CappedExponentialBackOffStrategy(
+$backOff = new ExponentialBackOffStrategy(
     100, // initial delay in microseconds
     2500000, // (optional) max delay in microseconds, default 2.5 seconds
     15, // (optional) max number of tries, default -1 (no max),

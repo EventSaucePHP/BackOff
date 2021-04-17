@@ -2,14 +2,21 @@
 
 namespace EventSauce\BackOff;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class CappedExponentialBackOffStrategyTest extends TestCase
+class LinearBackOffStrategyTest extends TestCase
 {
+    private ?int $recordedSleep = null;
+    private Closure $sleeper;
+
     protected function setUp(): void
     {
-        SleepSpy::reset();
+        $this->recordedSleep = null;
+        $this->sleeper = function(int $duration) {
+            $this->recordedSleep = $duration;
+        };
     }
 
     /**
@@ -18,12 +25,10 @@ class CappedExponentialBackOffStrategyTest extends TestCase
      */
     public function it_backs_of_exponentially(int $tries, int $expectedSleep): void
     {
-        $backoff = new CappedExponentialBackOffStrategy(100, -1);
+        $backoff = new LinearBackOffStrategy(100, 25, 250000, $this->sleeper);
         $backoff->backOff($tries, new RuntimeException('oops'));
 
-        $sleeps = SleepSpy::recordedSleeps();
-        self::assertCount(1, $sleeps);
-        self::assertEquals($expectedSleep, $sleeps[0]);
+        self::assertEquals($expectedSleep, $this->recordedSleep);
     }
 
     public function dpExpectedSleeps(): iterable
@@ -32,11 +37,11 @@ class CappedExponentialBackOffStrategyTest extends TestCase
             /** tries, expected sleep ms */
             [1, 100],
             [2, 200],
-            [3, 400],
-            [4, 800],
-            [5, 1600],
-            [6, 3200],
-            [7, 6400],
+            [3, 300],
+            [4, 400],
+            [5, 500],
+            [6, 600],
+            [7, 700],
         ];
     }
 
@@ -46,12 +51,10 @@ class CappedExponentialBackOffStrategyTest extends TestCase
      */
     public function it_respects_a_max_sleep_time(int $tries, int $expectedSleep): void
     {
-        $backoff = new CappedExponentialBackOffStrategy(100, 600);
+        $backoff = new LinearBackOffStrategy(100, 25, 600, $this->sleeper);
         $backoff->backOff($tries, new RuntimeException('oops'));
 
-        $sleeps = SleepSpy::recordedSleeps();
-        self::assertCount(1, $sleeps);
-        self::assertEquals($expectedSleep, $sleeps[0]);
+        self::assertEquals($expectedSleep, $this->recordedSleep);
     }
 
     public function dpExpectedCappedSleeps(): iterable
@@ -60,9 +63,9 @@ class CappedExponentialBackOffStrategyTest extends TestCase
             /** tries, expected sleep ms */
             [1, 100],
             [2, 200],
-            [3, 400],
-            [4, 600],
-            [5, 600],
+            [3, 300],
+            [4, 400],
+            [5, 500],
             [6, 600],
             [7, 600],
         ];
@@ -74,7 +77,7 @@ class CappedExponentialBackOffStrategyTest extends TestCase
      */
     public function it_throws_an_exception_when_over_the_max_tries(int $maxTries, int $tries): void
     {
-        $backoff = new CappedExponentialBackOffStrategy(100, 100, $maxTries);
+        $backoff = new LinearBackOffStrategy(100, $maxTries, 2500000, $this->sleeper);
         $exception = new RuntimeException('oops');
 
         self::expectExceptionObject($exception);
@@ -98,36 +101,11 @@ class CappedExponentialBackOffStrategyTest extends TestCase
      */
     public function it_does_not_throw_when_at_the_max_tries(): void
     {
-        $backoff = new CappedExponentialBackOffStrategy(100, 100, 100);
+        $backoff = new LinearBackOffStrategy(100, 100, 100, $this->sleeper);
         $exception = new RuntimeException('oops');
 
         self::expectNotToPerformAssertions();
 
         $backoff->backOff(100, $exception);
-    }
-
-    /**
-     * @test
-     * @dataProvider dpExpectedSleepFromExponent
-     */
-    public function it_uses_a_specified_exponent_value(int $tries, float $exponent, int $expectedSleep): void
-    {
-        $backoff = new CappedExponentialBackOffStrategy(100, -1, -1, $exponent);
-        $backoff->backOff($tries, new RuntimeException('oops'));
-
-        $sleeps = SleepSpy::recordedSleeps();
-        self::assertCount(1, $sleeps);
-        self::assertEquals($expectedSleep, $sleeps[0]);
-    }
-
-    public function dpExpectedSleepFromExponent(): iterable
-    {
-        return [
-            /** tries, exponent, expected sleep ms */
-            [2, 1.5, 150],
-            [3, 1.5, 225],
-            [2, 2.5, 250],
-            [3, 2.5, 625],
-        ];
     }
 }

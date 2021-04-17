@@ -6,23 +6,31 @@ namespace EventSauce\BackOff;
 
 use Throwable;
 
-class CappedExponentialBackOffStrategy implements BackOffStrategy
+use function call_user_func;
+use function usleep;
+
+class ExponentialBackOffStrategy implements BackOffStrategy
 {
     private int $initialDelayMs;
     private int $maxDelay;
     private int $maxTries;
     private float $base;
 
+    /*** @var callable */
+    private $sleeper;
+
     public function __construct(
         int $initialDelayMs,
+        int $maxTries,
         int $maxDelay = 2500000,
-        int $maxTries = -1,
-        float $base = 2.0
+        float $base = 2.0,
+        ?callable $sleeper = null
     ){
         $this->initialDelayMs = $initialDelayMs;
         $this->maxDelay = $maxDelay;
         $this->maxTries = $maxTries;
         $this->base = $base;
+        $this->sleeper = $sleeper ?: function(int $duration) { usleep($duration); };
     }
 
     /**
@@ -30,21 +38,13 @@ class CappedExponentialBackOffStrategy implements BackOffStrategy
      */
     public function backOff(int $tries, Throwable $throwable): void
     {
-        if ($this->hasExhaustedTries($tries)) {
+        if ($tries > $this->maxTries) {
             throw $throwable;
         }
 
         $delay = $this->initialDelayMs * $this->base ** ($tries - 1);
+        $delay = (int) min($this->maxDelay, $delay);
 
-        if ($this->maxDelay !== -1) {
-            $delay = min($this->maxDelay, $delay);
-        }
-
-        usleep((int) $delay);
-    }
-
-    private function hasExhaustedTries(int $tries): bool
-    {
-        return $this->maxTries !== -1 && $tries > $this->maxTries;
+        call_user_func($this->sleeper, $delay);
     }
 }
