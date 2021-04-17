@@ -3,7 +3,7 @@
 This library provides an interface for encapsulated back-off strategies.
 
 ```bash
-composer require eventsuace/backoff
+composer require eventsauce/backoff
 ```
 
 ## Leveraging the back-off strategies
