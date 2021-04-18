@@ -3,6 +3,7 @@
 namespace EventSauce\BackOff;
 
 use Closure;
+use EventSauce\BackOff\Jitter\NoJitter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -25,7 +26,7 @@ class LinearBackOffStrategyTest extends TestCase
      */
     public function it_backs_of_exponentially(int $tries, int $expectedSleep): void
     {
-        $backoff = new LinearBackOffStrategy(100, 25, 250000, $this->sleeper);
+        $backoff = new LinearBackOffStrategy(100, 25, 250000, $this->sleeper, new NoJitter());
         $backoff->backOff($tries, new RuntimeException('oops'));
 
         self::assertEquals($expectedSleep, $this->recordedSleep);
@@ -51,7 +52,7 @@ class LinearBackOffStrategyTest extends TestCase
      */
     public function it_respects_a_max_sleep_time(int $tries, int $expectedSleep): void
     {
-        $backoff = new LinearBackOffStrategy(100, 25, 600, $this->sleeper);
+        $backoff = new LinearBackOffStrategy(100, 25, 600, $this->sleeper, new NoJitter());
         $backoff->backOff($tries, new RuntimeException('oops'));
 
         self::assertEquals($expectedSleep, $this->recordedSleep);
@@ -77,7 +78,7 @@ class LinearBackOffStrategyTest extends TestCase
      */
     public function it_throws_an_exception_when_over_the_max_tries(int $maxTries, int $tries): void
     {
-        $backoff = new LinearBackOffStrategy(100, $maxTries, 2500000, $this->sleeper);
+        $backoff = new LinearBackOffStrategy(100, $maxTries, 2500000, $this->sleeper, new NoJitter());
         $exception = new RuntimeException('oops');
 
         self::expectExceptionObject($exception);
@@ -101,7 +102,7 @@ class LinearBackOffStrategyTest extends TestCase
      */
     public function it_does_not_throw_when_at_the_max_tries(): void
     {
-        $backoff = new LinearBackOffStrategy(100, 100, 100, $this->sleeper);
+        $backoff = new LinearBackOffStrategy(100, 100, 100, $this->sleeper, new NoJitter());
         $exception = new RuntimeException('oops');
 
         self::expectNotToPerformAssertions();

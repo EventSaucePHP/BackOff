@@ -49,7 +49,7 @@ class LinearBackOffStrategy implements BackOffStrategy
 
         $delay = $this->initialDelayMs * $tries;
         $delay = $this->jitter->jitter($delay);
-        $delay = (int) min($this->maxDelay, $delay);
+        $delay = min($this->maxDelay, $delay);
 
         call_user_func($this->sleeper, $delay);
     }

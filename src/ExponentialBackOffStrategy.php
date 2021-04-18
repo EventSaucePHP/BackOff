@@ -54,8 +54,8 @@ class ExponentialBackOffStrategy implements BackOffStrategy
         }
 
         $delay = $this->initialDelayMs * $this->base ** ($tries - 1);
-        $delay = $this->jitter->jitter($delay);
-        $delay = (int) min($this->maxDelay, $delay);
+        $delay = $this->jitter->jitter((int) $delay);
+        $delay = min($this->maxDelay, $delay);
 
         call_user_func($this->sleeper, $delay);
     }
