@@ -148,6 +148,8 @@ $linear = new LinearBackOffStrategy(100000, 25, jitter: $jitter);
 
 ### Full Jitter
 
+![full jitter](./img/full-jitter.svg)
+
 The full jitter uses a randomized value from 0 to the initial calculated sleep time.
 
 ```text
@@ -161,6 +163,8 @@ $jitter = new FullJitter();
 
 ### Half Jitter
 
+![half jitter](./img/half-jitter.svg)
+
 The full jitter uses a randomized value from half the initial sleep to the full initial sleep time.
 
 ```text
@@ -173,6 +177,8 @@ $jitter = new HalfJitter();
 ```
 
 ### Scattered Jitter
+
+![scattered jitter](./img/scattered-jitter.svg)
 
 The scattered jitter uses a range in across which it's scatter the
 resulting values. To illustrate, here are a few examples:
