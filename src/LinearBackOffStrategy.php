@@ -4,6 +4,7 @@ namespace EventSauce\BackOff;
 
 use EventSauce\BackOff\Jitter\FullJitter;
 use EventSauce\BackOff\Jitter\Jitter;
+use EventSauce\BackOff\Jitter\NoJitter;
 use Throwable;
 
 use function call_user_func;
@@ -32,7 +33,7 @@ class LinearBackOffStrategy implements BackOffStrategy
         $this->sleeper = $sleeper ?: function (int $duration) {
             usleep($duration);
         };
-        $this->jitter = $jitter ?: new FullJitter();
+        $this->jitter = $jitter ?: new NoJitter();
     }
 
     /**
