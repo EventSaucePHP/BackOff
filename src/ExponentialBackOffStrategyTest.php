@@ -78,7 +78,7 @@ class ExponentialBackOffStrategyTest extends TestCase
      */
     public function it_throws_an_exception_when_over_the_max_tries(int $maxTries, int $tries): void
     {
-        $backoff = new ExponentialBackOffStrategy(100, $maxTries, 2500000, 2.0, $this->sleeper, new NoJitter());
+        $backoff = new ExponentialBackOffStrategy(0, $maxTries);
         $exception = new RuntimeException('oops');
 
         self::expectExceptionObject($exception);

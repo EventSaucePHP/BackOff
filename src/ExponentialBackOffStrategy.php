@@ -15,16 +15,11 @@ use function usleep;
 class ExponentialBackOffStrategy implements BackOffStrategy
 {
     private int $initialDelayMs;
-
     private int $maxDelay;
-
     private int $maxTries;
-
     private float $base;
-
     /*** @var callable */
     private $sleeper;
-
     private Jitter $jitter;
 
     public function __construct(

@@ -10,14 +10,15 @@ use function call_user_func;
 use function min;
 use function usleep;
 
-class LinearBackOffStrategy implements BackOffStrategy
+class FibonacciBackOffStrategy implements BackOffStrategy
 {
     private int $initialDelayMs;
     private int $maxDelay;
     private int $maxTries;
-    /*** @var callable|null */
+    /** @var callable */
     private $sleeper;
     private Jitter $jitter;
+    private array $cache = [0, 1];
 
     public function __construct(
         int $initialDelayMs,
@@ -25,7 +26,8 @@ class LinearBackOffStrategy implements BackOffStrategy
         int $maxDelay = 2500000,
         ?callable $sleeper = null,
         ?Jitter $jitter = null
-    ) {
+    )
+    {
         $this->initialDelayMs = $initialDelayMs;
         $this->maxDelay = $maxDelay;
         $this->maxTries = $maxTries;
@@ -35,19 +37,22 @@ class LinearBackOffStrategy implements BackOffStrategy
         $this->jitter = $jitter ?: new FullJitter();
     }
 
-    /**
-     * @throws Throwable
-     */
     public function backOff(int $tries, Throwable $throwable): void
     {
         if ($tries > $this->maxTries) {
             throw $throwable;
         }
 
-        $delay = $this->initialDelayMs * $tries;
+        $delay = $this->fibonacci($tries) * $this->initialDelayMs;
         $delay = min($this->maxDelay, $delay);
         $delay = $this->jitter->jitter($delay);
-
         call_user_func($this->sleeper, $delay);
+    }
+
+    protected function fibonacci(int $n): int
+    {
+        $phi = 1.6180339887499; // (1 + sqrt(5)) / 2;
+
+        return (int) (($phi ** $n - (1 - $phi) ** $n) / sqrt(5));
     }
 }
