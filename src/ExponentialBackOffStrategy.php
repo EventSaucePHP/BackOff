@@ -9,6 +9,7 @@ use EventSauce\BackOff\Jitter\Jitter;
 use Throwable;
 
 use function call_user_func;
+use function min;
 use function usleep;
 
 class ExponentialBackOffStrategy implements BackOffStrategy
@@ -53,9 +54,9 @@ class ExponentialBackOffStrategy implements BackOffStrategy
             throw $throwable;
         }
 
-        $delay = $this->initialDelayMs * $this->base ** ($tries - 1);
-        $delay = $this->jitter->jitter((int) $delay);
+        $delay = (int) ($this->initialDelayMs * $this->base ** ($tries - 1));
         $delay = min($this->maxDelay, $delay);
+        $delay = $this->jitter->jitter($delay);
 
         call_user_func($this->sleeper, $delay);
     }

@@ -48,7 +48,7 @@ A well-known back-off strategy is _exponential back-off_, which is the default p
 use EventSauce\BackOff\ExponentialBackOffStrategy;
 
 $backOff = new ExponentialBackOffStrategy(
-    100, // initial delay in microseconds
+    100000, // initial delay in microseconds, 0.1 seconds
     15, //  max number of tries
     2500000, // (optional) max delay in microseconds, default 2.5 seconds
     2.0, // (optional) base to control the growth factor, default 2.0
@@ -73,7 +73,7 @@ The linear back-off strategy increases the back-off time linearly.
 use EventSauce\BackOff\LinearBackOffStrategy;
 
 $backOff = new LinearBackOffStrategy(
-    100, // initial delay in microseconds
+    100000, // initial delay in microseconds, 0.1 seconds
     15, // max number of tries
     2500000, // (optional) max delay in microseconds, default 2.5 seconds
 );
