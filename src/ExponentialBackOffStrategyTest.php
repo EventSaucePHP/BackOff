@@ -4,6 +4,7 @@ namespace EventSauce\BackOff;
 
 use Closure;
 use EventSauce\BackOff\Jitter\NoJitter;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -80,6 +81,7 @@ class ExponentialBackOffStrategyTest extends TestCase
     {
         $backoff = new ExponentialBackOffStrategy(0, $maxTries);
         $exception = new RuntimeException('oops');
+        $backoff->backOff(1, new LogicException('not this'));
 
         self::expectExceptionObject($exception);
 
