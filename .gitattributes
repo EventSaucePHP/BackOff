@@ -8,4 +8,3 @@
 /phpunit.xml.dist export-ignore
 /README.md export-ignore
 /**/*Test.php export-ignore
-/**/*Spy.php export-ignore
