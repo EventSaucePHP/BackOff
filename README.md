@@ -42,6 +42,10 @@ class BusinessLogic
 
 A well-known back-off strategy is _exponential back-off_, which is the default provided strategy.
 
+```text
+sleep = initial_delay * (base ^ (number_of_tries - 1)
+```
+
 ```php
 <?php
 
@@ -63,9 +67,41 @@ try {
 }
 ```
 
+## Fibonacci back-off
+
+The Fibonacci back-off strategy increases the back-off based on the fibonacci sequence.
+
+```text
+sleep = initial_delay * fibonacci(number_of_tries)
+```
+
+```php
+<?php
+
+use EventSauce\BackOff\FibonacciBackOffStrategy;
+
+$backOff = new FibonacciBackOffStrategy(
+    100000, // initial delay in microseconds, 0.1 seconds
+    15, // max number of tries
+    2500000, // (optional) max delay in microseconds, default 2.5 seconds
+);
+
+$businessLogic = new BusinessLogic(new ExternalDependency(), $backOff);
+
+try {
+    $businessLogic->performAction();
+} catch (Throwable $throwable) {
+    // handle the throwable
+}
+```
+
 ## Linear back-off
 
 The linear back-off strategy increases the back-off time linearly.
+
+```text
+sleep = initial_delay * number_of_tries
+```
 
 ```php
 <?php
