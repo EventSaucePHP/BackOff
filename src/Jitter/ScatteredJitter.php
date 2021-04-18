@@ -4,7 +4,7 @@ namespace EventSauce\BackOff\Jitter;
 
 use function mt_rand;
 
-class RangedJitter implements Jitter
+class ScatteredJitter implements Jitter
 {
     private float $range;
 

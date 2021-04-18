@@ -9,14 +9,14 @@ use function count;
 use function max;
 use function min;
 
-class RangedJitterTest extends TestCase
+class ScatteredJitterTest extends TestCase
 {
     /**
      * @test
      */
     public function it_jitters_with_half(): void
     {
-        $jitter = new RangedJitter(0.5);
+        $jitter = new ScatteredJitter(0.5);
         $jittedSleeps = [];
 
         for ($i = 0; $i < 100000; $i++) {
@@ -40,7 +40,7 @@ class RangedJitterTest extends TestCase
      */
     public function it_jitters_with_a_quarter(): void
     {
-        $jitter = new RangedJitter(0.25);
+        $jitter = new ScatteredJitter(0.25);
         $jittedSleeps = [];
 
         for ($i = 0; $i < 100000; $i++) {

@@ -123,6 +123,77 @@ try {
 }
 ```
 
+## Jitter
+
+When many clients are forced to retry, having deterministic interval
+can cause many of these clients to retry at the same time. Adding
+randomness to the mix ensures retrying clients are scattered across
+time. The randomness ensures that it is less likely for the clients
+to all retry at the same time.
+
+### Using Jitter
+
+Every strategy that sleeps accepted a `EventSauce\BackOff\Jitter\Jitter`
+implementation.
+
+```php
+use EventSauce\BackOff\ExponentialBackOffStrategy;
+use EventSauce\BackOff\FibonacciBackOffStrategy;
+use EventSauce\BackOff\LinearBackOffStrategy;
+
+$exponential = new ExponentialBackOffStrategy(100000, 25, jitter: $jitter);
+$fibonacci = new FibonacciBackOffStrategy(100000, 25, jitter: $jitter);
+$linear = new LinearBackOffStrategy(100000, 25, jitter: $jitter);
+```
+
+### Full Jitter
+
+The full jitter uses a randomized value from 0 to the initial calculated sleep time.
+
+```text
+sleep = number_between(0, sleep)
+```
+
+```php
+use EventSauce\BackOff\Jitter\FullJitter;
+$jitter = new FullJitter();
+```
+
+### Half Jitter
+
+The full jitter uses a randomized value from half the initial sleep to the full initial sleep time.
+
+```text
+sleep = sleep / 2 + number_between(0 , sleep / 2)
+```
+
+```php
+use EventSauce\BackOff\Jitter\HalfJitter;
+$jitter = new HalfJitter();
+```
+
+### Scattered Jitter
+
+The scattered jitter uses a range in across which it's scatter the
+resulting values. To illustrate, here are a few examples:
+
+| Range | Min | Max
+| --- | ---: | ---: |
+| 0.25 | 75% | 125% | 
+| 0.5 | 50% | 150% | 
+| 0.1 | 90% | 110% |
+
+
+```text
+
+sleep = sleep / 2 + number_between(0 , sleep / 2)
+```
+
+```php
+use EventSauce\BackOff\Jitter\ScatteredJitter;
+$jitter = new ScatteredJitter();
+```
+
 ## Design rationale
 
 Unlike other exponential back-off libraries, this library doesn't run the
