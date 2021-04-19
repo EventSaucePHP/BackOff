@@ -191,8 +191,9 @@ resulting values. To illustrate, here are a few examples:
 
 
 ```text
-
-sleep = sleep / 2 + number_between(0 , sleep / 2)
+jittered = sleep * range
+base = sleep - jittered
+sleep = base + number_between(0 , jittered * 2)
 ```
 
 ```php
