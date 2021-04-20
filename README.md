@@ -198,7 +198,7 @@ sleep = base + number_between(0 , jittered * 2)
 
 ```php
 use EventSauce\BackOff\Jitter\ScatteredJitter;
-$jitter = new ScatteredJitter($range = 0.25);
+$jitter = new ScatteredJitter($range = 0.5);
 ```
 
 ## Design rationale
