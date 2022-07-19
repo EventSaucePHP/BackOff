@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EventSauce\BackOff;
 
-use EventSauce\BackOff\Jitter\FullJitter;
 use EventSauce\BackOff\Jitter\Jitter;
 use EventSauce\BackOff\Jitter\NoJitter;
 use Throwable;

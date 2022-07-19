@@ -19,7 +19,6 @@ class FibonacciBackOffStrategy implements BackOffStrategy
     /** @var callable */
     private $sleeper;
     private Jitter $jitter;
-    private array $cache = [0, 1];
 
     public function __construct(
         int $initialDelayMs,

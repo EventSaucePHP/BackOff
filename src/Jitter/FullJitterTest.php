@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use function array_sum;
 use function max;
 use function min;
-use function var_dump;
 
 class FullJitterTest extends TestCase
 {
