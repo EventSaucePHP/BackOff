@@ -36,4 +36,4 @@ jobs:
 #        run: vendor/bin/phpstan analyze -c phpstan.neon
 
       - name: Execute tests
-        run: vendor/bin/phpunit --verbose --coverage-text --coverage-clover=coverage.clover
+        run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
