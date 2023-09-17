@@ -248,6 +248,35 @@ function action(Client $client, BackOffStrategy $backOff): void
 
 The choice is yours. Enjoy!
 
----
-
 PS: yes, those were a lot of goto statements, deal with it 😎
+
+## But Frank, I'm super lazy!
+
+Ok ok ok, well in that case, use the `BackOffRunner` class to run any
+`callable` with a retry strategy.
+
+```php
+use EventSauce\BackOff\BackOffRunner;
+use EventSauce\BackOff\ExponentialBackOffStrategy;
+
+$strategy = new ExponentialBackOffStrategy(initialDelayMs: 100, maxTries: 5);
+$runner = new BackOffRunner($strategy);
+
+$runner->run(function () {
+    // Do something that might throw an exception!
+});
+```
+
+Want to only retry on certain exceptions? Pass the exception class as the second constructor argument.
+
+```php
+use EventSauce\BackOff\BackOffRunner;
+use EventSauce\BackOff\ExponentialBackOffStrategy;
+
+$strategy = new ExponentialBackOffStrategy(initialDelayMs: 100, maxTries: 5);
+$runner = new BackOffRunner($strategy, LogicException::class);
+
+$runner->run(function () {
+    // Only LogicException is retried, the rest is not!
+});
+```
