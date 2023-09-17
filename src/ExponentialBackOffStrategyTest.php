@@ -7,6 +7,7 @@ use EventSauce\BackOff\Jitter\NoJitter;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use const PHP_INT_MAX;
 
 class ExponentialBackOffStrategyTest extends TestCase
 {
@@ -133,5 +134,18 @@ class ExponentialBackOffStrategyTest extends TestCase
             [2, 2.5, 250],
             [3, 2.5, 625],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_throw_an_exception_when_max_tries_is_infinite(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        $backoff = new ExponentialBackOffStrategy(0, -1);
+        $exception = new RuntimeException('oops');
+
+        $backoff->backOff(PHP_INT_MAX, $exception);
     }
 }
