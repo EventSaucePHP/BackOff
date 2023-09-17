@@ -38,7 +38,7 @@ class FibonacciBackOffStrategy implements BackOffStrategy
 
     public function backOff(int $tries, Throwable $throwable): void
     {
-        if ($tries > $this->maxTries) {
+        if ($this->maxTries !== -1 && $tries > $this->maxTries) {
             throw $throwable;
         }
 

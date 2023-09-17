@@ -7,6 +7,7 @@ use EventSauce\BackOff\Jitter\NoJitter;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use const PHP_INT_MAX;
 
 class FibonacciBackOffStrategyTest extends TestCase
 {
@@ -60,5 +61,18 @@ class FibonacciBackOffStrategyTest extends TestCase
         self::expectExceptionObject($exception);
 
         $backOff->backOff(26, $exception);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_throw_an_exception_when_max_tries_is_infinite(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        $backoff = new FibonacciBackOffStrategy(0, -1);
+        $exception = new RuntimeException('oops');
+
+        $backoff->backOff(PHP_INT_MAX, $exception);
     }
 }

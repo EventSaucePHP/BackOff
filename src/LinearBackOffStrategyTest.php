@@ -6,6 +6,7 @@ use Closure;
 use EventSauce\BackOff\Jitter\NoJitter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use const PHP_INT_MAX;
 
 class LinearBackOffStrategyTest extends TestCase
 {
@@ -95,6 +96,21 @@ class LinearBackOffStrategyTest extends TestCase
             [100, 101],
             [100, 150],
         ];
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function it_does_not_throw_an_exception_when_max_tries_is_infinite(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        $backoff = new LinearBackOffStrategy(0, -1);
+        $exception = new RuntimeException('oops');
+
+        $backoff->backOff(PHP_INT_MAX, $exception);
     }
 
     /**
