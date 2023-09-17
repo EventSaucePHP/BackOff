@@ -33,7 +33,7 @@ class LinearBackOffStrategyTest extends TestCase
         self::assertEquals($expectedSleep, $this->recordedSleep);
     }
 
-    public function dpExpectedSleeps(): iterable
+    public static function dpExpectedSleeps(): iterable
     {
         return [
             /** tries, expected sleep ms */
@@ -59,7 +59,7 @@ class LinearBackOffStrategyTest extends TestCase
         self::assertEquals($expectedSleep, $this->recordedSleep);
     }
 
-    public function dpExpectedCappedSleeps(): iterable
+    public static function dpExpectedCappedSleeps(): iterable
     {
         return [
             /** tries, expected sleep ms */
@@ -87,7 +87,7 @@ class LinearBackOffStrategyTest extends TestCase
         $backoff->backOff($tries, $exception);
     }
 
-    public function dpGoingOverTheMaxTries(): iterable
+    public static function dpGoingOverTheMaxTries(): iterable
     {
         return [
             /** max tries, tries */

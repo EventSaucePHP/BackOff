@@ -36,7 +36,7 @@ class FibonacciBackOffStrategyTest extends TestCase
         self::assertEquals($expectedDelay, $this->recordedSleep);
     }
 
-    public function dpExpectedSleeps(): iterable
+    public static function dpExpectedSleeps(): iterable
     {
         return [
             [1, 100000],
